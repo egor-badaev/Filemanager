@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		745060A72620F9690042C243 /* EBFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 745060A62620F9690042C243 /* EBFoundation */; };
 		747256B62620CE1700D81546 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747256B52620CE1700D81546 /* AppDelegate.swift */; };
 		747256B82620CE1700D81546 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747256B72620CE1700D81546 /* SceneDelegate.swift */; };
 		747256BA2620CE1700D81546 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747256B92620CE1700D81546 /* ViewController.swift */; };
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				745060A72620F9690042C243 /* EBFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = FileManager;
+			packageProductDependencies = (
+				745060A62620F9690042C243 /* EBFoundation */,
+			);
 			productName = FileManager;
 			productReference = 747256B22620CE1700D81546 /* FileManager.app */;
 			productType = "com.apple.product-type.application";
@@ -110,6 +115,9 @@
 				Base,
 			);
 			mainGroup = 747256A92620CE1700D81546;
+			packageReferences = (
+				745060A52620F9690042C243 /* XCRemoteSwiftPackageReference "EBFoundation" */,
+			);
 			productRefGroup = 747256B32620CE1700D81546 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -339,6 +347,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		745060A52620F9690042C243 /* XCRemoteSwiftPackageReference "EBFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/egor-badaev/EBFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		745060A62620F9690042C243 /* EBFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 745060A52620F9690042C243 /* XCRemoteSwiftPackageReference "EBFoundation" */;
+			productName = EBFoundation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 747256AA2620CE1700D81546 /* Project object */;
 }

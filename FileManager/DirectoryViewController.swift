@@ -195,6 +195,8 @@ extension DirectoryViewController: UITableViewDelegate {
 // MARK: - PHPickerViewControllerDelegate
 extension DirectoryViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+
         guard let result = results.first else { return }
         
         let provider = result.itemProvider
@@ -226,6 +228,5 @@ extension DirectoryViewController: PHPickerViewControllerDelegate {
                 }
             }
         }
-        picker.dismiss(animated: true, completion: nil)
     }
 }

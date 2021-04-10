@@ -7,6 +7,7 @@
 
 import UIKit
 import EBFoundation
+import PhotosUI
 
 class DirectoryViewController: UIViewController, AlertPresenter {
     
@@ -102,6 +103,14 @@ class DirectoryViewController: UIViewController, AlertPresenter {
     
     @objc private func addPhoto(_ sender: Any) {
         print(type(of: self), #function, type(of: sender))
+        var config = PHPickerConfiguration(photoLibrary: .shared())
+        config.filter = .images
+        // TODO: select multiple photos
+        config.selectionLimit = 1
+
+        let photoPickerVc = PHPickerViewController(configuration: config)
+        photoPickerVc.delegate = self
+        navigationController?.present(photoPickerVc, animated: true, completion: nil)
     }
 }
 
@@ -178,5 +187,43 @@ extension DirectoryViewController: UITableViewDelegate {
         let fsObject = directory.objects[indexPath.row]
         guard fsObject.type != .up else { return .none }
         return .delete
+    }
+}
+
+// MARK: - PHPickerViewControllerDelegate
+extension DirectoryViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        guard let result = results.first else { return }
+        
+        let provider = result.itemProvider
+        guard let typeIdentifier = provider.registeredTypeIdentifiers.first else { return }
+        
+        provider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] (url, error) in
+            
+            guard let self = self else { return }
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.presentErrorAlert(error.localizedDescription)
+                }
+                return
+            }
+            
+            guard let url = url else { return }
+            
+            self.directory.moveItem(from: url) { result in
+                switch result {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.presentErrorAlert(error.localizedDescription)
+                    }
+                case .success(let row):
+                    DispatchQueue.main.async {
+                        self.tableView.insertRows(at: [IndexPath(row: row, section: 0)], with: .top)
+                    }
+                }
+            }
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
 }

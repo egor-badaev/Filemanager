@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import EBFoundation
 
 enum DirectoryError: LocalizedError {
-    case cannotDisplayDirectory
+    case cannotDisplayObject
     
     var errorDescription: String? {
         switch self {
-        case .cannotDisplayDirectory:
+        case .cannotDisplayObject:
             return "Невозможно отобразить новую папку"
         }
     }
@@ -39,11 +40,7 @@ class Directory {
         print(type(of: self), #function, newDirectoryUrl)
         do{
             try FileManager.default.createDirectory(at: newDirectoryUrl, withIntermediateDirectories: false, attributes: nil)
-            let oldObjects = objects
-            objects = Directory.fileSystemObjects(at: url)
-            guard let newIndex = objects.indices.first(where: { ($0 == oldObjects.count) || (objects[$0].name != oldObjects[$0].name) }) else {
-                throw DirectoryError.cannotDisplayDirectory
-            }
+            let newIndex = try getNewObjectIndex()
             completion?(.success(newIndex))
         } catch let error {
             completion?(.failure(error))
@@ -56,6 +53,17 @@ class Directory {
             try FileManager.default.removeItem(at: url)
             objects.remove(at: index)
             completion?(.success(index))
+        } catch let error {
+            completion?(.failure(error))
+        }
+    }
+    
+    func moveItem(from url: URL, completion: ((Result<Int, Error>) -> Void)?) {
+        do {
+            let newLocation = self.url.appendingPathComponent(url.lastPathComponent).avoidingDuplication()
+            try FileManager.default.moveItem(at: url, to: newLocation)
+            let newIndex = try getNewObjectIndex()
+            completion?(.success(newIndex))
         } catch let error {
             completion?(.failure(error))
         }
@@ -94,5 +102,14 @@ class Directory {
         objects.sort { $0.type.rawValue < $1.type.rawValue }
 
         return objects
+    }
+    
+    private func getNewObjectIndex() throws -> Int {
+        let oldObjects = objects
+        objects = Directory.fileSystemObjects(at: url)
+        guard let newIndex = objects.indices.first(where: { ($0 == oldObjects.count) || (objects[$0].name != oldObjects[$0].name) }) else {
+            throw DirectoryError.cannotDisplayObject
+        }
+        return newIndex
     }
 }

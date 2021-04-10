@@ -16,15 +16,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FileManagerIcon" translatesAutoresizingMaskIntoConstraints="NO" id="FAY-4e-32e">
-                                <rect key="frame" x="132" y="393" width="150" height="120"/>
+                                <rect key="frame" x="47" y="325" width="320" height="256"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="1TO-GK-L6b"/>
-                                    <constraint firstAttribute="height" constant="120" id="YaE-ZT-324"/>
+                                    <constraint firstAttribute="width" constant="320" id="1TO-GK-L6b"/>
+                                    <constraint firstAttribute="height" constant="256" id="YaE-ZT-324"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="FAY-4e-32e" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="EN9-Ef-0Ua"/>
                             <constraint firstItem="FAY-4e-32e" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="rFP-8T-jkg"/>
@@ -37,6 +37,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="FileManagerIcon" width="150" height="120"/>
+        <image name="FileManagerIcon" width="320" height="256"/>
     </resources>
 </document>

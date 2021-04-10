@@ -7,6 +7,17 @@
 
 import Foundation
 
+enum DirectoryError: LocalizedError {
+    case cannotDisplayDirectory
+    
+    var errorDescription: String? {
+        switch self {
+        case .cannotDisplayDirectory:
+            return "Невозможно отобразить новую папку"
+        }
+    }
+}
+
 class Directory {
 
     //MARK: - Properties
@@ -14,19 +25,47 @@ class Directory {
     private var url: URL
     
     // MARK: - Public
-    static let defaultUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    static let rootUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     
-    // MARK: - Private
+    // MARK: - Public
     init(at url: URL) {
         print(type(of: self), #function)
         self.url = url
         objects = Directory.fileSystemObjects(at: url)
     }
     
+    func createDirectory(_ name: String, completion: ((Result<Int,Error>) -> Void)?) {
+        let newDirectoryUrl = url.appendingPathComponent(name)
+        print(type(of: self), #function, newDirectoryUrl)
+        do{
+            try FileManager.default.createDirectory(at: newDirectoryUrl, withIntermediateDirectories: false, attributes: nil)
+            let oldObjects = objects
+            objects = Directory.fileSystemObjects(at: url)
+            guard let newIndex = objects.indices.first(where: { ($0 == oldObjects.count) || (objects[$0].name != oldObjects[$0].name) }) else {
+                throw DirectoryError.cannotDisplayDirectory
+            }
+            completion?(.success(newIndex))
+        } catch let error {
+            completion?(.failure(error))
+        }
+    }
+    
+    func deleteItem(at index: Int, completion: ((Result<Int, Error>) -> Void)?) {
+        let url = objects[index].url
+        do {
+            try FileManager.default.removeItem(at: url)
+            objects.remove(at: index)
+            completion?(.success(index))
+        } catch let error {
+            completion?(.failure(error))
+        }
+    }
+    
+    //MARK: - Private
     private static func fileSystemObjects(at url: URL) -> [FileSystemObject] {
         var objects = [FileSystemObject]()
         
-        if url != Directory.defaultUrl {
+        if url != Directory.rootUrl {
             objects.append(FileSystemObject(type: .up, name: "..", url: url.deletingLastPathComponent()))
         }
         
@@ -50,10 +89,10 @@ class Directory {
             }
         }
         
-        // TODO: Sort files and directories by type and name
+        // Windows-style sorting: case-insensitive, directories first
+        objects.sort { $0.name.lowercased() < $1.name.lowercased() }
+        objects.sort { $0.type.rawValue < $1.type.rawValue }
+
         return objects
     }
-    
-    
-    
 }

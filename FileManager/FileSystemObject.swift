@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum ContentType {
+enum ContentType: Int {
+    case up = 0
     case directory
     case file
-    case up
 }
 
 struct FileSystemObject {

@@ -8,10 +8,12 @@
 import UIKit
 import EBFoundation
 
-class DirectoryViewController: UIViewController {
+class DirectoryViewController: UIViewController, AlertPresenter {
     
     //MARK: - Properties
     var directory: Directory
+    
+    private var directoryName: String?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -26,7 +28,7 @@ class DirectoryViewController: UIViewController {
 
     // MARK: - Initializers
     required init?(coder: NSCoder) {
-        directory = Directory(at: Directory.defaultUrl)
+        directory = Directory(at: Directory.rootUrl)
         super.init(coder: coder)
         title = "Documents"
     }
@@ -42,7 +44,7 @@ class DirectoryViewController: UIViewController {
         print(type(of: self), #function)
         super.viewDidLoad()
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add folder", style: .plain, target: self, action: #selector(addFolder(_:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add folder", style: .plain, target: self, action: #selector(addDirectory(_:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add photo", style: .plain, target: self, action: #selector(addPhoto(_:)))
         
         setupSubviews()
@@ -62,8 +64,40 @@ class DirectoryViewController: UIViewController {
 
 
     // MARK: - Actions
-    @objc private func addFolder(_ sender: Any) {
+    @objc private func addDirectory(_ sender: Any) {
         print(type(of: self), #function, type(of: sender))
+        
+        directoryName = nil
+        
+        let alertController = UIAlertController(title: "Add directory", message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "Enter directory name"
+            textField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+        }
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] action in
+            guard let self = self,
+                  let name = self.directoryName else { return }
+            self.directory.createDirectory(name) { result in
+                switch result {
+                case .failure(let error):
+                    self.presentErrorAlert(error.localizedDescription)
+                case .success(let row):
+                    DispatchQueue.main.async {
+                        self.tableView.insertRows(at: [IndexPath(row: row, section: 0)], with: .top)
+                    }
+                }
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        navigationController?.present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc private func textFieldDidChange(_ sender: Any) {
+        guard let textField = sender as? UITextField else {
+            return
+        }
+        directoryName = textField.text
     }
     
     @objc private func addPhoto(_ sender: Any) {
@@ -97,6 +131,34 @@ extension DirectoryViewController: UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard editingStyle == .delete else { return }
+        
+        let fsObject = directory.objects[indexPath.row]
+        
+        let alertTitle = "Удалить \(fsObject.type == .directory ? "папку" : "файл") \"\(fsObject.name)\"?"
+        
+        let alertController = UIAlertController(title: alertTitle, message: "Действие нельзя будет отменить", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Да, удалить", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.directory.deleteItem(at: indexPath.row) { result in
+                switch result {
+                case .failure(let error):
+                    self.presentErrorAlert(error.localizedDescription)
+                case .success(_):
+                    tableView.deleteRows(at: [indexPath], with: .bottom)
+                }
+            }
+        }
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+        
+        navigationController?.present(alertController, animated: true, completion: nil)
+    }
 }
 
 //MARK: - UITableViewDelegate
@@ -110,6 +172,11 @@ extension DirectoryViewController: UITableViewDelegate {
         } else if fsObject.type == .up {
             navigationController?.popViewController(animated: true)
         }
-        
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        let fsObject = directory.objects[indexPath.row]
+        guard fsObject.type != .up else { return .none }
+        return .delete
     }
 }

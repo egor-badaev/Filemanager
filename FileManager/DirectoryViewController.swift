@@ -131,11 +131,13 @@ extension DirectoryViewController: UITableViewDataSource {
         switch fileSystemObject.type {
         case .file:
             cell.imageView?.image = UIImage(systemName: "photo")
+            cell.accessoryType = .none
         case .directory:
             cell.imageView?.image = UIImage(systemName: "folder")
             cell.accessoryType = .disclosureIndicator
         default:
             cell.imageView?.image = UIImage(systemName: "folder")
+            cell.accessoryType = .none
         }
         
         return cell

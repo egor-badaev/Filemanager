@@ -17,6 +17,9 @@
 		747256CC2620D18F00D81546 /* Directory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747256CB2620D18F00D81546 /* Directory.swift */; };
 		747256CF2620D21200D81546 /* FileSystemObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747256CE2620D21200D81546 /* FileSystemObject.swift */; };
 		748775C226220CCC00F623EE /* URL+Filemanager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748775C126220CCC00F623EE /* URL+Filemanager.swift */; };
+		748775F62624BE7800F623EE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748775F52624BE7800F623EE /* LoginViewController.swift */; };
+		748775FA2624BE9F00F623EE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748775F92624BE9F00F623EE /* SettingsViewController.swift */; };
+		74FF6ECC2624EB82005E56E7 /* SortingSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		747256CB2620D18F00D81546 /* Directory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Directory.swift; sourceTree = "<group>"; };
 		747256CE2620D21200D81546 /* FileSystemObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemObject.swift; sourceTree = "<group>"; };
 		748775C126220CCC00F623EE /* URL+Filemanager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Filemanager.swift"; sourceTree = "<group>"; };
+		748775F52624BE7800F623EE /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		748775F92624BE9F00F623EE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingSettingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,16 +72,59 @@
 			children = (
 				747256B52620CE1700D81546 /* AppDelegate.swift */,
 				747256B72620CE1700D81546 /* SceneDelegate.swift */,
-				747256B92620CE1700D81546 /* DirectoryViewController.swift */,
-				747256CB2620D18F00D81546 /* Directory.swift */,
-				748775C126220CCC00F623EE /* URL+Filemanager.swift */,
-				747256CE2620D21200D81546 /* FileSystemObject.swift */,
+				748775F22624BDDB00F623EE /* LoginFlow */,
+				748775F02624BDC400F623EE /* DirectoryFlow */,
+				748775F32624BDE600F623EE /* SettingsFlow */,
 				747256BB2620CE1700D81546 /* Main.storyboard */,
 				747256BE2620CE1A00D81546 /* Assets.xcassets */,
 				747256C02620CE1A00D81546 /* LaunchScreen.storyboard */,
 				747256C32620CE1A00D81546 /* Info.plist */,
 			);
 			path = FileManager;
+			sourceTree = "<group>";
+		};
+		748775EE2624BDB500F623EE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				747256CB2620D18F00D81546 /* Directory.swift */,
+				747256CE2620D21200D81546 /* FileSystemObject.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		748775F02624BDC400F623EE /* DirectoryFlow */ = {
+			isa = PBXGroup;
+			children = (
+				748775EE2624BDB500F623EE /* Model */,
+				748775F42624BE1A00F623EE /* Helper */,
+				747256B92620CE1700D81546 /* DirectoryViewController.swift */,
+			);
+			path = DirectoryFlow;
+			sourceTree = "<group>";
+		};
+		748775F22624BDDB00F623EE /* LoginFlow */ = {
+			isa = PBXGroup;
+			children = (
+				748775F52624BE7800F623EE /* LoginViewController.swift */,
+			);
+			path = LoginFlow;
+			sourceTree = "<group>";
+		};
+		748775F32624BDE600F623EE /* SettingsFlow */ = {
+			isa = PBXGroup;
+			children = (
+				748775F92624BE9F00F623EE /* SettingsViewController.swift */,
+				74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */,
+			);
+			path = SettingsFlow;
+			sourceTree = "<group>";
+		};
+		748775F42624BE1A00F623EE /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				748775C126220CCC00F623EE /* URL+Filemanager.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,12 +203,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				748775F62624BE7800F623EE /* LoginViewController.swift in Sources */,
 				747256BA2620CE1700D81546 /* DirectoryViewController.swift in Sources */,
 				747256CF2620D21200D81546 /* FileSystemObject.swift in Sources */,
 				747256B62620CE1700D81546 /* AppDelegate.swift in Sources */,
 				747256CC2620D18F00D81546 /* Directory.swift in Sources */,
 				747256B82620CE1700D81546 /* SceneDelegate.swift in Sources */,
 				748775C226220CCC00F623EE /* URL+Filemanager.swift in Sources */,
+				74FF6ECC2624EB82005E56E7 /* SortingSettingViewController.swift in Sources */,
+				748775FA2624BE9F00F623EE /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

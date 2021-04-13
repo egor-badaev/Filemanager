@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "EBFoundation",
+        "repositoryURL": "https://github.com/egor-badaev/EBFoundation",
+        "state": {
+          "branch": null,
+          "revision": "d211869c0d749c71fccf5248155411e815ea7b7a",
+          "version": "1.0.5"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

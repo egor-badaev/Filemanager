@@ -8,7 +8,7 @@
 import UIKit
 import EBFoundation
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, AlertPresenter {
 
     enum Mode {
         case registration
@@ -22,6 +22,9 @@ class LoginViewController: UIViewController {
     private let segueIdentifier = "showApplication"
     private let controlHeight: CGFloat = 42.0
     private let margin: CGFloat = 32.0
+
+    // MARK: - Password management
+    private let password = Password()
 
     // MARK: - Subviews
     private lazy var scrollView: UIScrollView = {
@@ -98,6 +101,8 @@ class LoginViewController: UIViewController {
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.toAutoLayout()
+        textField.isSecureTextEntry = true
+        textField.textAlignment = .center
         textField.borderStyle = .roundedRect
         textField.heightAnchor.constraint(equalToConstant: controlHeight).isActive = true
         textField.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
@@ -125,6 +130,7 @@ class LoginViewController: UIViewController {
     }()
 
     // MARK: - Properties
+    // TODO: Move to view model
     private var mode: Mode = .registration {
         didSet {
             titleLabel.text = screenTitle
@@ -173,6 +179,9 @@ class LoginViewController: UIViewController {
 
     }
 
+    private var passwordInput: String = ""
+    private var initialPasswordInput: String = ""
+
     // MARK: - Initializers
 
     required init?(coder: NSCoder) {
@@ -192,7 +201,7 @@ class LoginViewController: UIViewController {
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        print(type(of: self), #function)
         setupUI()
     }
 
@@ -202,10 +211,10 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
@@ -214,7 +223,7 @@ class LoginViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
             container.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 300),
+            container.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
             container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             container.widthAnchor.constraint(equalToConstant: 300)
         ])
@@ -222,8 +231,11 @@ class LoginViewController: UIViewController {
     }
 
     private func setLoginMode() {
-        // TODO: Check if password has been set
-        mode = .registration
+        if password.isSet {
+            mode = .signin
+        } else {
+            mode = .registration
+        }
     }
 
     func animateModeSwitch(to mode: Mode) {
@@ -242,24 +254,65 @@ class LoginViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func textFieldEditingChanged(_ sender: UITextField) {
+        print(type(of: self), #function)
+        guard let password = sender.text else { return }
+        if password.count > 4 {
+            presentErrorAlert("Password should be no longer than 4 characters!")
+            textField.text = String(password.prefix(4))
+        }
+
+        passwordInput = password
 
     }
 
     @objc private func buttonTapped(_ sender: UIButton) {
+
+        guard passwordInput.count > 1 else {
+            presentErrorAlert("Password cannot be empty!")
+            return
+        }
+
+        switch mode {
+        case .registration,
+             .update:
+            initialPasswordInput = passwordInput
+            textField.text = nil
+            print("passwordInput after setting textField to nil: \(passwordInput)")
+            mode = .confirmation
+        case .confirmation:
+            if passwordInput == initialPasswordInput {
+                password.save(passwordInput) { (success, error) in
+                    guard success,
+                          error == nil else {
+                        if let error = error {
+                            self.presentErrorAlert(error.localizedDescription)
+                        }
+                        return
+                    }
+                    self.performLogin()
+                }
+            } else {
+                presentErrorAlert("Passwords mimatch!")
+                passwordInput = ""
+                initialPasswordInput = ""
+                textField.text = nil
+                mode = .registration
+                return
+            }
+        case .signin:
+            guard password.isValid(passwordInput) else {
+                presentErrorAlert("Wrong password. Try again")
+                return
+            }
+            performLogin()
+        }
+    }
+
+    private func performLogin() {
         guard originalMode != .update else {
             navigationController?.popViewController(animated: true)
             return
         }
-        navigationController?.performSegue(withIdentifier: segueIdentifier, sender: sender)
+        navigationController?.performSegue(withIdentifier: segueIdentifier, sender: nil)
     }
-    
-
-    // MARK: - Navigation
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == segueIdentifier else { return }
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-
 }

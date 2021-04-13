@@ -9,6 +9,12 @@ import UIKit
 
 class SettingsViewController: UIViewController {
 
+    private enum Cell: Int, CaseIterable {
+        case sorting = 0
+        case showSize
+        case changePassword
+    }
+
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
 
@@ -36,46 +42,54 @@ class SettingsViewController: UIViewController {
         ])
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // TODO: Only reload when sorting changed
+        tableView.reloadData()
+    }
+
     @objc private func filesizeSwitchToggle(_ sender: UISwitch) {
-        print("toggle")
+        print("toggle switch")
+        Settings.shared.showSize.toggle()
     }
     
 }
 
 extension SettingsViewController: UITableViewDataSource {
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard section == 0 else { return 0 }
-        return 3
+        return Cell.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = UITableViewCell(style: .value1, reuseIdentifier: String(describing: UITableViewCell.self))
-        switch indexPath.row {
-        case 0:
+
+        guard let cellType = Cell(rawValue: indexPath.row) else {
+            return cell
+        }
+
+        switch cellType {
+        case .sorting:
             cell.textLabel?.text = "Sorting style"
-            cell.detailTextLabel?.text = "Windows"
+            cell.detailTextLabel?.text = SortingStyle.label(for: Settings.shared.sorting)
             cell.accessoryView = nil
             cell.accessoryType = .disclosureIndicator
-        case 1:
+        case .showSize:
             cell.textLabel?.text = "Display file size"
             cell.detailTextLabel?.text = nil
             let filesizeSwitch = UISwitch()
-            filesizeSwitch.setOn(true, animated: false)
+            filesizeSwitch.setOn(Settings.shared.showSize, animated: false)
             filesizeSwitch.addTarget(self, action: #selector(filesizeSwitchToggle(_:)), for: .valueChanged)
             cell.accessoryView = filesizeSwitch
             cell.accessoryType = .none
-        case 2:
+        case .changePassword:
             cell.textLabel?.text = "Change password"
             cell.detailTextLabel?.text = nil
             cell.accessoryView = nil
             cell.accessoryType = .disclosureIndicator
-        default:
-            cell.textLabel?.text = nil
-            cell.detailTextLabel?.text = nil
-            cell.accessoryType = .none
-            cell.accessoryView = nil
-
         }
         return cell
     }

@@ -17,4 +17,5 @@ struct FileSystemObject {
     var type: ContentType
     var name: String
     var url: URL
+    var fileSize: Int?
 }

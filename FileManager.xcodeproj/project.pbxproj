@@ -20,6 +20,7 @@
 		748775F62624BE7800F623EE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748775F52624BE7800F623EE /* LoginViewController.swift */; };
 		748775FA2624BE9F00F623EE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748775F92624BE9F00F623EE /* SettingsViewController.swift */; };
 		749397D226262892004DBB14 /* Password.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749397D126262892004DBB14 /* Password.swift */; };
+		749397DE26263FDE004DBB14 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749397DD26263FDD004DBB14 /* Settings.swift */; };
 		74FF6ECC2624EB82005E56E7 /* SortingSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */; };
 		DD36AFA03F752C71D9FFCFD6 /* Pods_FileManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B02E1D17B33BB147D6F035CC /* Pods_FileManager.framework */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		748775F52624BE7800F623EE /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		748775F92624BE9F00F623EE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		749397D126262892004DBB14 /* Password.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Password.swift; sourceTree = "<group>"; };
+		749397DD26263FDD004DBB14 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingSettingViewController.swift; sourceTree = "<group>"; };
 		B02E1D17B33BB147D6F035CC /* Pods_FileManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FileManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D20924930E9C7EA0884297E0 /* Pods-FileManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileManager.debug.xcconfig"; path = "Target Support Files/Pods-FileManager/Pods-FileManager.debug.xcconfig"; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 		748775F32624BDE600F623EE /* SettingsFlow */ = {
 			isa = PBXGroup;
 			children = (
+				749397DC26263FCD004DBB14 /* Model */,
 				748775F92624BE9F00F623EE /* SettingsViewController.swift */,
 				74FF6ECB2624EB82005E56E7 /* SortingSettingViewController.swift */,
 			);
@@ -149,6 +152,14 @@
 			isa = PBXGroup;
 			children = (
 				749397D126262892004DBB14 /* Password.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		749397DC26263FCD004DBB14 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				749397DD26263FDD004DBB14 /* Settings.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -291,6 +302,7 @@
 				748775C226220CCC00F623EE /* URL+Filemanager.swift in Sources */,
 				74FF6ECC2624EB82005E56E7 /* SortingSettingViewController.swift in Sources */,
 				749397D226262892004DBB14 /* Password.swift in Sources */,
+				749397DE26263FDE004DBB14 /* Settings.swift in Sources */,
 				748775FA2624BE9F00F623EE /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

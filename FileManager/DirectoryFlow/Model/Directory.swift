@@ -77,7 +77,7 @@ class Directory {
             objects.append(FileSystemObject(type: .up, name: "..", url: url.deletingLastPathComponent()))
         }
         
-        let resourceKeys : [URLResourceKey] = [.isDirectoryKey, .isRegularFileKey]
+        let resourceKeys : [URLResourceKey] = [.isDirectoryKey, .isRegularFileKey, .fileSizeKey]
         if let documentsEnumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: resourceKeys, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants], errorHandler: nil) {
             for case let fileURL as URL in documentsEnumerator {
                 if let resourceValues = try? fileURL.resourceValues(forKeys: Set(resourceKeys)),
@@ -90,18 +90,28 @@ class Directory {
                         type = .file
                     }
                     if let contentType = type {
-                        let fsObject = FileSystemObject(type: contentType, name: fileURL.lastPathComponent, url: fileURL)
+                        let fsObject = FileSystemObject(type: contentType, name: fileURL.lastPathComponent, url: fileURL, fileSize: resourceValues.fileSize)
                         objects.append(fsObject)
                     }
                 }
             }
         }
-        
-        // Windows-style sorting: case-insensitive, directories first
-        objects.sort { $0.name.lowercased() < $1.name.lowercased() }
-        objects.sort { $0.type.rawValue < $1.type.rawValue }
+
+        Directory.sort(objects: &objects)
 
         return objects
+    }
+
+    static func sort(objects: inout [FileSystemObject]) {
+        switch Settings.shared.sorting {
+        case .windows:
+            // Windows-style sorting: case-insensitive, directories first
+            objects.sort { $0.name.lowercased() < $1.name.lowercased() }
+            objects.sort { $0.type.rawValue < $1.type.rawValue }
+        case .macos:
+            // macOS-style sorting
+            objects.sort { $0.name.lowercased() < $1.name.lowercased() }
+        }
     }
     
     private func getNewObjectIndex() throws -> Int {

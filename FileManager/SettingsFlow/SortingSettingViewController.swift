@@ -9,12 +9,6 @@ import UIKit
 
 class SortingSettingViewController: UIViewController {
 
-    private var sortingType = 0 {
-        didSet {
-            tableView.reloadRows(at: [IndexPath(row: oldValue, section: 0), IndexPath(row: sortingType, section: 0)], with: .none)
-        }
-    }
-
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
 
@@ -33,8 +27,6 @@ class SortingSettingViewController: UIViewController {
         title = "Sorting style"
 
         setupSubviews()
-        configure()
-
     }
 
     private func setupSubviews() {
@@ -47,33 +39,22 @@ class SortingSettingViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
-    private func configure() {
-        sortingType = 1
-    }
 }
 
 extension SortingSettingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard section == 0 else { return 0 }
-        return 2
+        return SortingStyle.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self)) else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self)),
+              let sortingStyle = SortingStyle(rawValue: indexPath.row) else {
             return UITableViewCell()
         }
 
-        switch indexPath.row {
-        case 0:
-            cell.textLabel?.text = "Windows"
-        case 1:
-            cell.textLabel?.text = "macOS / Linux"
-        default:
-            cell.textLabel?.text = nil
-        }
-
-        cell.accessoryType = sortingType == indexPath.row ? .checkmark : .none
+        cell.textLabel?.text = SortingStyle.label(for: sortingStyle)
+        cell.accessoryType = Settings.shared.sorting == sortingStyle ? .checkmark : .none
 
         return cell
     }
@@ -87,9 +68,16 @@ extension SortingSettingViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard indexPath.section == 0 else { return }
+        
+        guard indexPath.section == 0,
+              let sortingStyle = SortingStyle(rawValue: indexPath.row) else { return }
+
+        let oldValue = Settings.shared.sorting
+        Settings.shared.sorting = sortingStyle
+
+        // allow for deselect animation to finish
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            self.sortingType = indexPath.row
+            tableView.reloadRows(at: [IndexPath(row: oldValue.rawValue, section: 0), IndexPath(row: sortingStyle.rawValue, section: 0)], with: .none)
         }
     }
 }

@@ -21,12 +21,13 @@ enum SortingStyle: Int, CaseIterable {
     }
 }
 
-enum SettingsKey {
-    static let sorting = "FileManagerSettingsSortingStyle"
-    static let showSize = "FileManagerSettingShouldShowSize"
-}
-
 class Settings {
+
+    private enum SettingsKey {
+        static let sorting = "FileManagerSettingsSortingStyle"
+        static let showSize = "FileManagerSettingShouldShowSize"
+        static let updated = "FileManagerSettingsUpdatedFlag"
+    }
 
     static let shared: Settings = {
         let instance = Settings()
@@ -49,6 +50,7 @@ class Settings {
         set {
             print(type(of: self), #function, newValue)
             UserDefaults.standard.setValue(newValue.rawValue, forKey: SettingsKey.sorting)
+            haveUpdates = true
         }
     }
 
@@ -65,6 +67,30 @@ class Settings {
         set {
             print(type(of: self), #function, newValue)
             UserDefaults.standard.setValue(newValue, forKey: SettingsKey.showSize)
+            haveUpdates = true
+        }
+
+    }
+
+    /**
+     Helper flag to determine if any changes were made since the last check
+
+     - returns:
+     `true` if any of the settings were changed, `false` otherwise
+
+     Resets on every read - use wisely (you can only catch changes once!)
+     */
+    var haveUpdates: Bool {
+        get {
+            let wereUpdated = UserDefaults.standard.bool(forKey: SettingsKey.updated)
+            if wereUpdated {
+                UserDefaults.standard.setValue(false, forKey: SettingsKey.updated)
+            }
+            return wereUpdated
+        }
+
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: SettingsKey.updated)
         }
     }
 

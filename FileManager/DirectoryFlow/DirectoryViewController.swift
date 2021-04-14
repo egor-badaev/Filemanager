@@ -53,7 +53,7 @@ class DirectoryViewController: UIViewController, AlertPresenter {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // TODO: Only re-sort and reload when necessary
+        guard Settings.shared.haveUpdates else { return }
         Directory.sort(objects: &directory.objects)
         tableView.reloadData()
     }

@@ -42,13 +42,6 @@ class SettingsViewController: UIViewController {
         ])
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // TODO: Only reload when sorting changed
-        tableView.reloadData()
-    }
-
     @objc private func filesizeSwitchToggle(_ sender: UISwitch) {
         print("toggle switch")
         Settings.shared.showSize.toggle()
@@ -106,6 +99,7 @@ extension SettingsViewController: UITableViewDelegate {
         switch indexPath.row {
         case 0:
             let settingsVc = SortingSettingViewController()
+            settingsVc.delegate = self
             navigationController?.pushViewController(settingsVc, animated: true)
         case 2:
             let loginVc = LoginViewController(for: .update)
@@ -113,5 +107,11 @@ extension SettingsViewController: UITableViewDelegate {
         default:
             return
         }
+    }
+}
+
+extension SettingsViewController: SortingSettingViewControllerDelegate {
+    func sortingStyleDidChange() {
+        tableView.reloadData()
     }
 }

@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol SortingSettingViewControllerDelegate: AnyObject {
+    func sortingStyleDidChange()
+}
+
 class SortingSettingViewController: UIViewController {
+
+    weak var delegate: SortingSettingViewControllerDelegate?
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -74,6 +80,7 @@ extension SortingSettingViewController: UITableViewDelegate {
 
         let oldValue = Settings.shared.sorting
         Settings.shared.sorting = sortingStyle
+        delegate?.sortingStyleDidChange()
 
         // allow for deselect animation to finish
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {

@@ -42,13 +42,19 @@ class DirectoryViewController: UIViewController, AlertPresenter {
     
     // MARK: - Life cycle
     override func viewDidLoad() {
-        print(type(of: self), #function)
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add folder", style: .plain, target: self, action: #selector(addDirectory(_:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add photo", style: .plain, target: self, action: #selector(addPhoto(_:)))
         
         setupSubviews()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard Settings.shared.haveUpdates else { return }
+        Directory.sort(objects: &directory.objects)
+        tableView.reloadData()
     }
     
     // MARK: - Private methods
@@ -66,8 +72,7 @@ class DirectoryViewController: UIViewController, AlertPresenter {
 
     // MARK: - Actions
     @objc private func addDirectory(_ sender: Any) {
-        print(type(of: self), #function, type(of: sender))
-        
+
         directoryName = nil
         
         let alertController = UIAlertController(title: "Add directory", message: nil, preferredStyle: .alert)
@@ -102,7 +107,7 @@ class DirectoryViewController: UIViewController, AlertPresenter {
     }
     
     @objc private func addPhoto(_ sender: Any) {
-        print(type(of: self), #function, type(of: sender))
+
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
         // TODO: select multiple photos
@@ -121,23 +126,26 @@ extension DirectoryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self)) else {
-            return UITableViewCell()
-        }
-        
+
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: String(describing: UITableViewCell.self))
+
         let fileSystemObject = directory.objects[indexPath.row]
         cell.textLabel?.text = fileSystemObject.name
-        
+        cell.detailTextLabel?.text = nil
+        cell.accessoryType = .none
+
         switch fileSystemObject.type {
         case .file:
             cell.imageView?.image = UIImage(systemName: "photo")
-            cell.accessoryType = .none
+            if let fileSize = fileSystemObject.fileSize,
+               Settings.shared.showSize {
+                cell.detailTextLabel?.text = ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
+            }
         case .directory:
             cell.imageView?.image = UIImage(systemName: "folder")
             cell.accessoryType = .disclosureIndicator
         default:
             cell.imageView?.image = UIImage(systemName: "folder")
-            cell.accessoryType = .none
         }
         
         return cell

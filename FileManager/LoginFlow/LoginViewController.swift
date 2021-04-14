@@ -201,7 +201,6 @@ class LoginViewController: UIViewController, AlertPresenter {
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(type(of: self), #function)
         setupUI()
     }
 
@@ -293,7 +292,6 @@ class LoginViewController: UIViewController, AlertPresenter {
     // MARK: - Actions
 
     @objc private func textFieldEditingChanged(_ sender: UITextField) {
-        print(type(of: self), #function)
         guard let password = sender.text else { return }
         if password.count > 4 {
             presentErrorAlert("Password should be no longer than 4 characters!")
@@ -316,7 +314,6 @@ class LoginViewController: UIViewController, AlertPresenter {
              .update:
             initialPasswordInput = passwordInput
             textField.text = nil
-            print("passwordInput after setting textField to nil: \(passwordInput)")
             mode = .confirmation
         case .confirmation:
             if passwordInput == initialPasswordInput {

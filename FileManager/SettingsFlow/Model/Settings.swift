@@ -48,7 +48,6 @@ class Settings {
         }
 
         set {
-            print(type(of: self), #function, newValue)
             UserDefaults.standard.setValue(newValue.rawValue, forKey: SettingsKey.sorting)
             haveUpdates = true
         }
@@ -65,7 +64,6 @@ class Settings {
         }
 
         set {
-            print(type(of: self), #function, newValue)
             UserDefaults.standard.setValue(newValue, forKey: SettingsKey.showSize)
             haveUpdates = true
         }

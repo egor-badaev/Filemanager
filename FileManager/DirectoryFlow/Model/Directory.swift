@@ -30,14 +30,12 @@ class Directory {
     
     // MARK: - Public
     init(at url: URL) {
-        print(type(of: self), #function)
         self.url = url
         objects = Directory.fileSystemObjects(at: url)
     }
     
     func createDirectory(_ name: String, completion: ((Result<Int,Error>) -> Void)?) {
         let newDirectoryUrl = url.appendingPathComponent(name)
-        print(type(of: self), #function, newDirectoryUrl)
         do{
             try FileManager.default.createDirectory(at: newDirectoryUrl, withIntermediateDirectories: false, attributes: nil)
             let newIndex = try getNewObjectIndex()

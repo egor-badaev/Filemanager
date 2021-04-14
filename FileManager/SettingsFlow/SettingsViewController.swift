@@ -43,7 +43,6 @@ class SettingsViewController: UIViewController {
     }
 
     @objc private func filesizeSwitchToggle(_ sender: UISwitch) {
-        print("toggle switch")
         Settings.shared.showSize.toggle()
     }
     

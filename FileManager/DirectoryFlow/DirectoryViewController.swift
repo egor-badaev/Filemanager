@@ -42,7 +42,6 @@ class DirectoryViewController: UIViewController, AlertPresenter {
     
     // MARK: - Life cycle
     override func viewDidLoad() {
-        print(type(of: self), #function)
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add folder", style: .plain, target: self, action: #selector(addDirectory(_:)))
@@ -73,8 +72,7 @@ class DirectoryViewController: UIViewController, AlertPresenter {
 
     // MARK: - Actions
     @objc private func addDirectory(_ sender: Any) {
-        print(type(of: self), #function, type(of: sender))
-        
+
         directoryName = nil
         
         let alertController = UIAlertController(title: "Add directory", message: nil, preferredStyle: .alert)
@@ -109,7 +107,7 @@ class DirectoryViewController: UIViewController, AlertPresenter {
     }
     
     @objc private func addPhoto(_ sender: Any) {
-        print(type(of: self), #function, type(of: sender))
+
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
         // TODO: select multiple photos
